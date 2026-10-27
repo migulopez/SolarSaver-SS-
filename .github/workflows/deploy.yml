@@ -41,8 +41,17 @@ jobs:
       - name: Build application
         run: npm run build
 
+      - name: Deploy to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
+        continue-on-error: true
+        with:
+          enablement: true
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
@@ -51,4 +60,5 @@ jobs:
 
       - name: Deploy to GitHub Pages
         id: deployment
+        continue-on-error: true
         uses: actions/deploy-pages@v4
