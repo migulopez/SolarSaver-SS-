@@ -59,11 +59,16 @@ El modelo tridimensional y la simulación están construidos a escala métrica r
      * *Panel Solar* (orientación fotovoltaica).
 2. **Encendido y Apagado Virtual:**
    * Al accionar el interruptor o el botón de la interfaz, el switch bascula en 3D, el LED de estado cambia y las pantallas LCD se iluminan en azul brillante o pasan al modo apagado con sonido mecánico de alta fidelidad.
-3. **Bandeja Deslizante y Celulares Virtuales:**
+3. **Bandeja Deslizante, Celulares Virtuales y Control de Carga:**
    * Apertura y cierre animado de la bandeja inferior con efecto sonoro de fricción.
    * Posibilidad de colocar o retirar individualmente el **Celular A** y el **Celular B**.
-4. **Simulación de Carga de Celulares:**
-   * Al estar colocados y la estación encendida, las pantallas de los celulares se iluminan con un fondo de bloqueo dinámico, reloj, porcentaje numérico en ascenso continuo y onda de carga rápida de color verde.
+   * **Selectores de Porcentaje de Batería:** Deslizadores interactivos y botones de ajuste rápido (10%, 50%, 85%, 100%) para modificar libremente el nivel de carga actual de cada celular o de la estación.
+4. **Simulación de Carga Acelerada en Tiempo Real:**
+   * **Multiplicador de Tiempo Real (1×, 5×, 20×, 60×, 120×):** Permite ver en cuestión de segundos el proceso completo de carga y descarga de los teléfonos y del banco de baterías de la estación.
+   * **Ciclo Solar Continuo:** Modo opcional para observar el desplazamiento continuo del Sol por el cielo con variación dinámica de sombras e iluminación.
+5. **Entorno Exterior Vívido con Casa 3D:**
+   * Representación en 3D de una casa residencial/refugio en la parte trasera con porche de madera, ventanas iluminadas, paneles solares en el tejado, chimenea y cerco.
+   * Iluminación diurna brillante, cúpula celeste procedural con degradados realistas, césped natural con textura y terraza de piedra.
 5. **Panel Solar Orientable & Auto-Tracking:**
    * Deslizadores interactivos de inclinación (10° a 85°) y azimut (0° a 360°).
    * Botón de **"Alinear Panel con el Sol"** que calcula automáticamente el vector de incidencia óptimo reduciendo las pérdidas por desalineación.

@@ -1,6 +1,6 @@
 /**
  * SceneManager.js
- * Central 3D orchestrator: Camera, Renderer, Controls, Models, Lighting, Cable, and WebXR.
+ * Central 3D orchestrator: Camera, Renderer, Controls, Models, House Environment, and WebXR.
  */
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -8,6 +8,7 @@ import { ARButton } from 'three/addons/webxr/ARButton.js';
 import { StationModel } from '../models/StationModel.js';
 import { SolarPanelModel } from '../models/SolarPanelModel.js';
 import { CableModel } from '../models/CableModel.js';
+import { HouseModel } from '../models/HouseModel.js';
 import { EnvironmentManager } from './EnvironmentManager.js';
 import { InteractionManager } from './InteractionManager.js';
 
@@ -32,7 +33,7 @@ export class SceneManager {
     this.initInteraction();
     this.initWebXR();
 
-    // Start with front-isometric beauty view
+    // Start with outdoor isometric view showing station and house in background
     this.setCameraPreset('isometric', false);
 
     // Setup render loop
@@ -42,12 +43,11 @@ export class SceneManager {
   initThree() {
     // 1. Scene
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x0a0f1d);
 
     // 2. Camera
     const aspect = this.container.clientWidth / this.container.clientHeight;
-    this.camera = new THREE.PerspectiveCamera(40, aspect, 0.05, 50);
-    this.camera.position.set(0.45, 0.45, 0.75);
+    this.camera = new THREE.PerspectiveCamera(42, aspect, 0.05, 100);
+    this.camera.position.set(0.65, 0.55, 1.15);
 
     // 3. Renderer
     this.renderer = new THREE.WebGLRenderer({
@@ -60,7 +60,7 @@ export class SceneManager {
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.15;
+    this.renderer.toneMappingExposure = 1.25;
 
     this.container.appendChild(this.renderer.domElement);
 
@@ -69,11 +69,11 @@ export class SceneManager {
     this.controls.enableDamping = true;
     this.controls.dampingFactor = 0.06;
     this.controls.minDistance = 0.25;
-    this.controls.maxDistance = 3.5;
-    this.controls.maxPolarAngle = Math.PI / 2 - 0.02; // prevent clipping into floor
-    this.controls.target.set(0.12, 0.1, 0);
+    this.controls.maxDistance = 12.0;
+    this.controls.maxPolarAngle = Math.PI / 2 - 0.02; // prevent clipping under the lawn
+    this.controls.target.set(0.15, 0.12, 0);
 
-    // 5. Environment
+    // 5. Environment (Sky, Sunlight, Lawn, Clouds)
     this.env = new EnvironmentManager(this.scene);
 
     // 6. Resize listener
@@ -81,6 +81,10 @@ export class SceneManager {
   }
 
   initObjects() {
+    // Background House & Backyard Environment
+    this.house = new HouseModel();
+    this.scene.add(this.house.group);
+
     // Main SolarSaver-SS Station
     this.station = new StationModel();
     this.scene.add(this.station.group);
@@ -138,28 +142,32 @@ export class SceneManager {
   setCameraPreset(name, animate = true) {
     const presets = {
       isometric: {
-        pos: new THREE.Vector3(0.48, 0.42, 0.72),
-        target: new THREE.Vector3(0.12, 0.1, 0)
+        pos: new THREE.Vector3(0.72, 0.52, 1.05),
+        target: new THREE.Vector3(0.18, 0.12, 0.0)
       },
       frontal: {
-        pos: new THREE.Vector3(0, 0.13, 0.62),
-        target: new THREE.Vector3(0, 0.11, 0)
+        pos: new THREE.Vector3(0.08, 0.20, 0.82),
+        target: new THREE.Vector3(0.08, 0.14, 0.0)
       },
       lateral: {
-        pos: new THREE.Vector3(0.72, 0.16, 0.05),
-        target: new THREE.Vector3(0.1, 0.11, 0)
+        pos: new THREE.Vector3(0.95, 0.22, 0.05),
+        target: new THREE.Vector3(0.15, 0.12, 0.0)
       },
       superior: {
-        pos: new THREE.Vector3(0, 0.88, 0.001),
-        target: new THREE.Vector3(0, 0.1, 0)
+        pos: new THREE.Vector3(0.1, 1.1, 0.001),
+        target: new THREE.Vector3(0.1, 0.1, 0.0)
       },
       bandeja: {
-        pos: new THREE.Vector3(0, 0.28, 0.45),
-        target: new THREE.Vector3(0, 0.06, 0.14)
+        pos: new THREE.Vector3(0.0, 0.28, 0.48),
+        target: new THREE.Vector3(0.0, 0.08, 0.14)
       },
       panel: {
-        pos: new THREE.Vector3(0.52, 0.38, 0.46),
-        target: new THREE.Vector3(0.48, 0.14, 0.02)
+        pos: new THREE.Vector3(0.68, 0.42, 0.55),
+        target: new THREE.Vector3(0.48, 0.15, 0.02)
+      },
+      casa: {
+        pos: new THREE.Vector3(1.2, 1.2, 2.8),
+        target: new THREE.Vector3(0.4, 1.0, -1.2)
       }
     };
 
@@ -182,7 +190,6 @@ export class SceneManager {
   }
 
   zoom(factor) {
-    // Zoom camera by scaling distance to target
     const dir = new THREE.Vector3().subVectors(this.camera.position, this.controls.target);
     dir.multiplyScalar(factor);
     this.camera.position.addVectors(this.controls.target, dir);
@@ -196,7 +203,6 @@ export class SceneManager {
     if (this.cameraAnimating) {
       this.cameraAnimProgress += delta / this.cameraAnimDuration;
       const t = Math.min(1.0, this.cameraAnimProgress);
-      // Smooth cubic ease out
       const ease = 1 - Math.pow(1 - t, 3);
 
       this.camera.position.lerpVectors(this.cameraStartPos, this.cameraEndPos, ease);
