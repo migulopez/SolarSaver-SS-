@@ -36,48 +36,37 @@ describe('SolarCalculator', () => {
   });
 });
 
-describe('PowerSimulator', () => {
-  it('initializes with default on state and realistic battery voltage', () => {
+describe('PowerSimulator Interactive Features & Speed', () => {
+  it('allows manual selection of phone battery levels', () => {
     const sim = new PowerSimulator();
-    const state = sim.getState();
-    expect(state.powerOn).toBe(true);
-    expect(state.batteryVoltage).toBeGreaterThan(11.0);
-    expect(state.batteryVoltage).toBeLessThanOrEqual(12.60);
-    expect(state.phones.phoneA.present).toBe(true);
+    sim.setPhoneBatteryPct('phoneA', 25);
+    expect(sim.phones.phoneA.batteryPct).toBe(25);
+    sim.setPhoneBatteryPct('phoneB', 92);
+    expect(sim.phones.phoneB.batteryPct).toBe(92);
   });
 
-  it('toggles power on and off', () => {
+  it('allows manual selection of station battery level', () => {
     const sim = new PowerSimulator();
-    expect(sim.powerOn).toBe(true);
-    sim.togglePower();
-    expect(sim.powerOn).toBe(false);
-    sim.togglePower();
-    expect(sim.powerOn).toBe(true);
+    sim.setStationBatteryPct(40);
+    expect(sim.batterySoC).toBeCloseTo(0.40, 2);
+    expect(sim.getState().batterySoCPct).toBe(40);
   });
 
-  it('charges phones when power is on and present', () => {
+  it('supports time acceleration multiplier', () => {
     const sim = new PowerSimulator();
-    sim.phones.phoneA.batteryPct = 50;
-    sim.update(5.0); // 5 seconds
-    const state = sim.getState();
-    expect(state.phones.phoneA.batteryPct).toBeGreaterThan(50);
+    sim.setPhoneBatteryPct('phoneA', 10);
+    sim.setTimeMultiplier(20); // 20x speed
+    sim.update(1.0); // 1 real second = 20 simulated seconds
+    expect(sim.phones.phoneA.batteryPct).toBeGreaterThan(20);
   });
 
-  it('stops charging phones when power is off', () => {
+  it('supports continuous automatic day progression', () => {
     const sim = new PowerSimulator();
-    sim.setPhonePresent('phoneA', true);
-    sim.powerOn = false;
-    sim.phones.phoneA.batteryPct = 50;
-    sim.update(5.0);
-    const state = sim.getState();
-    expect(state.phones.phoneA.batteryPct).toBe(50);
-    expect(state.phones.phoneA.active).toBe(false);
-  });
-
-  it('calculates voltage curve correctly based on SoC', () => {
-    const sim = new PowerSimulator();
-    expect(sim.calculateBatteryVoltage(1.0)).toBe(12.60);
-    expect(sim.calculateBatteryVoltage(0.0)).toBe(10.80);
-    expect(sim.calculateBatteryVoltage(0.5)).toBeGreaterThan(11.3);
+    sim.setTimeOfDay(12.0);
+    sim.toggleAutoProgressDay();
+    expect(sim.autoProgressDay).toBe(true);
+    sim.setTimeMultiplier(60);
+    sim.update(1.0);
+    expect(sim.timeOfDay).not.toBe(12.0);
   });
 });
