@@ -1,7 +1,7 @@
 /**
  * ControlsOverlay.js
- * Comprehensive interactive control bar with real-time time acceleration,
- * phone battery level selectors, solar/weather settings, and camera presets.
+ * Comprehensive interactive control bar with VR toggle for Meta Quest,
+ * time acceleration, phone battery level selectors, and camera presets.
  */
 import { soundManager } from '../audio/SoundManager.js';
 
@@ -23,13 +23,19 @@ export class ControlsOverlay {
         <div class="brand-group">
           <img src="./assets/favicon.svg" alt="SolarSaver Logo" class="brand-logo" />
           <div>
-            <h1 class="brand-title">SolarSaver-SS</h1>
-            <p class="brand-subtitle">Estación Solar de Emergencia 3D • Entorno Exterior con Casa</p>
+            <div class="brand-title-row">
+              <h1 class="brand-title">SolarSaver-SS</h1>
+              <span id="vr-mode-badge" class="badge badge-vr" style="display: none;">🥽 MODO VR ACTIVO</span>
+            </div>
+            <p class="brand-subtitle">Estación Solar de Emergencia 3D • Entorno Exterior y Realidad Virtual</p>
           </div>
         </div>
 
         <div class="top-actions">
-          <div id="xr-controls-container"></div>
+          <!-- Button to switch between Normal Game View and Meta Quest VR View -->
+          <button id="btn-toggle-vr" class="btn btn-vr" title="Cambiar entre Vista Normal de Juego y Modo VR para gafas META Quest">
+            🥽 Modo VR (Meta Quest)
+          </button>
           
           <button id="btn-blueprint" class="btn btn-secondary" title="Ver plano técnico y STL de referencia">
             📐 Plano Técnico & STL
@@ -45,6 +51,18 @@ export class ControlsOverlay {
           </div>
         </div>
       </header>
+
+      <!-- VR Information Banner -->
+      <div id="vr-banner" class="vr-banner">
+        <div class="vr-banner-content">
+          <span class="vr-banner-icon">🥽</span>
+          <div>
+            <strong>MODO REALIDAD VIRTUAL ACTIVADO (META QUEST)</strong>
+            <p>Puesto de visión a escala humana 1:1. Para experimentar en tus gafas <strong>Meta Quest 2 / 3 / Pro</strong>, abre esta página en el navegador <em>Meta Quest Browser</em>. Utiliza el gatillo del mando táctil para interactuar con los botones, la bandeja y los celulares mediante puntero láser.</p>
+          </div>
+          <button id="btn-exit-vr-banner" class="btn btn-compact btn-secondary">Salir de VR</button>
+        </div>
+      </div>
 
       <!-- View Preset Navigation Bar (Bottom Center) -->
       <div class="view-preset-bar">
@@ -195,21 +213,32 @@ export class ControlsOverlay {
   }
 
   bindEvents() {
-    // 1. Power Switch
+    // 1. VR Mode Toggle Button (Switches between Normal and Meta Quest VR)
+    const btnVR = document.getElementById('btn-toggle-vr');
+    btnVR?.addEventListener('click', () => {
+      this.sceneManager.toggleVRMode();
+    });
+
+    const btnExitVR = document.getElementById('btn-exit-vr-banner');
+    btnExitVR?.addEventListener('click', () => {
+      this.sceneManager.toggleVRMode();
+    });
+
+    // 2. Power Switch
     document.getElementById('btn-toggle-power')?.addEventListener('click', () => {
       const nextState = !this.sim.powerOn;
       this.sim.togglePower();
       soundManager.playSwitch(nextState);
     });
 
-    // 2. Drawer Toggle
+    // 3. Drawer Toggle
     document.getElementById('btn-toggle-drawer')?.addEventListener('click', () => {
       const nextOpen = !this.sim.drawerOpen;
       this.sim.toggleDrawer();
       soundManager.playDrawer(nextOpen);
     });
 
-    // 3. Phones Toggles
+    // 4. Phones Toggles
     document.getElementById('btn-toggle-phone-a')?.addEventListener('click', () => {
       const willBePresent = !this.sim.phones.phoneA.present;
       this.sim.togglePhone('phoneA');
@@ -224,13 +253,13 @@ export class ControlsOverlay {
       else soundManager.playPhoneDisconnect();
     });
 
-    // 4. AC 120V
+    // 5. AC 120V
     document.getElementById('btn-toggle-ac')?.addEventListener('click', () => {
       this.sim.toggleAC120V();
       soundManager.playBeep();
     });
 
-    // 5. Phone Battery Sliders
+    // 6. Phone Battery Sliders
     const sliderPhoneA = document.getElementById('slider-phone-a');
     sliderPhoneA?.addEventListener('input', e => {
       const val = parseInt(e.target.value, 10);
@@ -261,7 +290,7 @@ export class ControlsOverlay {
       });
     });
 
-    // 6. Time Acceleration Buttons
+    // 7. Time Acceleration Buttons
     const speedButtons = document.querySelectorAll('.speed-btn');
     speedButtons.forEach(btn => {
       btn.addEventListener('click', () => {
@@ -276,11 +305,11 @@ export class ControlsOverlay {
     // Continuous Day Cycle Toggle
     const btnAutoDay = document.getElementById('btn-auto-day');
     btnAutoDay?.addEventListener('click', () => {
-      const active = this.sim.toggleAutoProgressDay();
+      this.sim.toggleAutoProgressDay();
       soundManager.playBeep();
     });
 
-    // 7. Camera View presets
+    // 8. Camera View presets
     const presetButtons = document.querySelectorAll('.preset-btn');
     presetButtons.forEach(btn => {
       btn.addEventListener('click', () => {
@@ -292,7 +321,7 @@ export class ControlsOverlay {
       });
     });
 
-    // 8. Zoom Buttons
+    // 9. Zoom Buttons
     document.getElementById('btn-zoom-in')?.addEventListener('click', () => {
       this.sceneManager.zoom(0.85);
     });
@@ -300,14 +329,14 @@ export class ControlsOverlay {
       this.sceneManager.zoom(1.15);
     });
 
-    // 9. Sound Toggle
+    // 10. Sound Toggle
     const btnSound = document.getElementById('btn-sound');
     btnSound?.addEventListener('click', () => {
       const isEnabled = soundManager.toggleMute();
       btnSound.textContent = isEnabled ? '🔊' : '🔇';
     });
 
-    // 10. Solar sliders
+    // 11. Solar sliders
     const sliderTime = document.getElementById('slider-time');
     const timeVal = document.getElementById('time-val');
     sliderTime?.addEventListener('input', e => {
