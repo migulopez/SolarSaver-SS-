@@ -148,6 +148,104 @@ html, body {
   overflow: hidden;
 }
 
+/* VR Button and Badges */
+.brand-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.badge-vr {
+  background: rgba(147, 51, 234, 0.25);
+  color: #c084fc;
+  border: 1px solid #a855f7;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 12px;
+  letter-spacing: 0.5px;
+  animation: pulse-glow 2s infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 4px rgba(168, 85, 247, 0.4); }
+  50% { box-shadow: 0 0 12px rgba(168, 85, 247, 0.8); }
+}
+
+.btn-vr {
+  background: linear-gradient(135deg, #7c3aed, #9333ea);
+  border: 1px solid #c084fc;
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.45);
+}
+
+.btn-vr:hover {
+  background: linear-gradient(135deg, #9333ea, #a855f7);
+  box-shadow: 0 4px 20px rgba(168, 85, 247, 0.6);
+}
+
+.btn-vr.active {
+  background: linear-gradient(135deg, #059669, #10b981);
+  border-color: #34d399;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.5);
+}
+
+/* VR Banner Alert */
+.vr-banner {
+  display: none;
+  position: absolute;
+  top: 74px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 150;
+  width: 90%;
+  max-width: 640px;
+  background: rgba(15, 23, 42, 0.94);
+  border: 1px solid #a855f7;
+  border-radius: 12px;
+  padding: 12px 18px;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 20px rgba(168, 85, 247, 0.3);
+}
+
+.vr-banner.visible {
+  display: block;
+}
+
+.vr-banner-content {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.vr-banner-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.vr-banner-content strong {
+  color: #c084fc;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+}
+
+.vr-banner-content p {
+  color: #cbd5e1;
+  font-size: 11px;
+  margin-top: 3px;
+  line-height: 1.4;
+}
+
+/* Hide 2D UI when immersed in native WebXR headset */
+body.in-webxr #controls-overlay,
+body.in-webxr #telemetry-hud,
+body.in-webxr .top-nav,
+body.in-webxr .view-preset-bar {
+  opacity: 0.15;
+  pointer-events: none;
+}
+
 /* Common Buttons */
 .btn {
   display: inline-flex;

@@ -84,8 +84,12 @@ El modelo tridimensional y la simulación están construidos a escala métrica r
    * Simulación térmica y activación del ventilador con cargas elevadas.
 8. **Interacción Directa con Raycasting y Tooltips:**
    * Al pasar el cursor sobre cualquier componente 3D (interruptor, pantallas, bandeja, celulares, panel solar), se muestra un tooltip explicativo y el cursor cambia a puntero para interactuar con un clic directo.
-9. **Realidad Mixta (WebXR):**
-   * Botón integrado para proyectar el cargador y su panel en Realidad Aumentada sobre superficies del mundo real usando dispositivos compatibles con WebXR.
+9. **Modo Realidad Virtual (VR) para Gafas META Quest:**
+   * **Botón Conmutador Dual:** Permite alternar instantáneamente entre `🎮 Vista Normal de Juego (Orbit)` y `🥽 Modo VR (Meta Quest)`.
+   * **Compatibilidad Nativa WebXR en Meta Quest:** Al abrir el proyecto en el navegador oficial *Meta Quest Browser* (en Quest 2, Quest 3, Quest 3S o Quest Pro), se inicia una sesión inmersiva WebXR a escala humana 1:1 en el patio frente a la mesa de trabajo y la casa.
+   * **Mandos Táctiles con Puntero Láser y Háptica:** Rayos láser interactivos proyectados desde los controladores Meta Quest Touch para apuntar y accionar el interruptor, la bandeja, los teléfonos y el panel solar con vibración háptica en el gatillo.
+   * **Tablet 3D Flotante con Telemetría en VR:** Pantalla holográfica tridimensional situada en el entorno virtual que muestra voltaje, potencia solar y estado de carga sin tener que quitarse el visor.
+   * **Simulador de Vista VR en Navegador Convencional:** Si se activa el modo VR en una pantalla de escritorio o móvil sin visor conectado, la cámara desciende a altura de ojos humana (1.65 m) en primera persona con retícula central interactiva.
 10. **Visor de Documentación y Planos Técnicos:**
     * Modal interactivo integrado con el plano técnico original de cotas, render STL tridimensional, tabla de especificaciones completas y lecciones didácticas sobre energía solar.
 11. **Efectos de Audio Procedurales (Web Audio API):**
